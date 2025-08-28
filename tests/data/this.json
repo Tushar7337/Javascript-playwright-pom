@@ -3,5 +3,10 @@
         "userName": "Admin",
         "password": "admin123"
     },
-    "errorMessage": "No Records Found"
+    "errorMessage": "No Records Found",
+    "saucedemo":{
+        "user":"standard_user",
+        "pass":"secret_sauce"
+    }
+
 }

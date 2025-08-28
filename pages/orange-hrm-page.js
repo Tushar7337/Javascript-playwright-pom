@@ -12,6 +12,19 @@ export class OrangeHrm extends BasePage{
     disabledUserOption = this.page.getByRole('option', {name:'Disabled'});
     searchButton = this.page.locator("//button[text()=' Search ']")
     noDataFound = this.page.locator("//span[text()='No Records Found']")
+    disabledDeleteButton = this.page.locator("//i[@class='oxd-icon bi-trash']")
+    
+    // Add Admin first
+    addAdminButton = this.page.locator("//button[text()=' Add ']")
+    clickAdminUserRoleDropDown = this.page.locator("(//div[@class='oxd-select-text-input'])[1]")
+    addAdminRoleOption = this.page.locator('option', {name:'Admin'})
+    employeeNameTextbox = this.page.locator("//input[@placeholder='Type for hints...']")
+    clickAdminStatusDropDown = this.page.locator("(//div[@class='oxd-select-text-input'])[2]")
+    adminStatusOption = this.page.locator('option', {name:'Disabled'})
+    usernameTextbox = this.page.locator("(//input[@class='oxd-input oxd-input--active'])[2]")
+    addAdminpassword = this.page.locator("(//input[@type='password'])[1]")
+    addAdminConfPassword = this.page.locator("(//input[@type='password'])[2]")
+    saveNewAdminButton = this.page.locator("//button[text()=' Save ']")
 
     async goToLoginPage(){
         await this.page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
@@ -34,9 +47,42 @@ export class OrangeHrm extends BasePage{
         await this.searchButton.click();        
     }
 
+    async verifyDesabledUserListDisplayed(){
+        await this.page.waitForLoadState('networkidle')
+        //console.log(this.disabledDeleteButton.length)
+
+        // Assert that at disabled admin user is present
+        expect(this.disabledDeleteButtons).toBeVisible();
+    }
+
     async verifyUserStatusAfterFilter(expectdMessage){
         await this.page.waitForLoadState('networkidle')
         await expect(this.noDataFound).toContainText(expectdMessage)
+
+    }
+
+    async addNewAdmin(employeeName, unqName, pass){
+        await this.adminMenuOption.click();
+        await this.page.waitForTimeout(3000);
+        await this.addAdminButton.click();
+        await this.clickAdminUserRoleDropDown.click();
+        await this.clickAdminUserRoleDropDown.press('ArrowDown');
+        await this.clickAdminUserRoleDropDown.press('Enter')
+
+        //await this.addAdminRoleOption.click()
+        await this.employeeNameTextbox.fill(employeeName)
+        await this.page.waitForTimeout(3000);
+        await this.employeeNameTextbox.press('ArrowDown')
+        await this.employeeNameTextbox.press('Enter')
+        await this.clickAdminStatusDropDown.click();
+        await this.clickAdminStatusDropDown.press('ArrowDown');
+        await this.clickAdminStatusDropDown.press('ArrowDown');
+        await this.clickAdminStatusDropDown.press('Enter')
+        //await this.adminStatusOption.click();
+        await this.usernameTextbox.fill(unqName);
+        await this.addAdminpassword.fill(pass);
+        await this.addAdminConfPassword.fill(pass);
+        await this.saveNewAdminButton.click();
 
     }
 }
