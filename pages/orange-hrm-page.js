@@ -25,6 +25,7 @@ export class OrangeHrm extends BasePage{
     addAdminpassword = this.page.locator("(//input[@type='password'])[1]")
     addAdminConfPassword = this.page.locator("(//input[@type='password'])[2]")
     saveNewAdminButton = this.page.locator("//button[text()=' Save ']")
+    disabledDeleteButtons = this.page.locator("text=Disabled").nth(1); // ('button', { name: 'Search' })
 
     async goToLoginPage(){
         await this.page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
@@ -52,7 +53,7 @@ export class OrangeHrm extends BasePage{
         //console.log(this.disabledDeleteButton.length)
 
         // Assert that at disabled admin user is present
-        expect(this.disabledDeleteButtons).toBeVisible();
+        await expect(this.disabledDeleteButtons).toBeVisible();
     }
 
     async verifyUserStatusAfterFilter(expectdMessage){
@@ -61,16 +62,18 @@ export class OrangeHrm extends BasePage{
 
     }
 
-    async addNewAdmin(employeeName, unqName, pass){
+    async addNewAdmin(unqName, pass){
         await this.adminMenuOption.click();
         await this.page.waitForTimeout(3000);
+        const name = await this.page.textContent("//p[@class='oxd-userdropdown-name']")
+        console.log(name) 
         await this.addAdminButton.click();
         await this.clickAdminUserRoleDropDown.click();
         await this.clickAdminUserRoleDropDown.press('ArrowDown');
         await this.clickAdminUserRoleDropDown.press('Enter')
 
         //await this.addAdminRoleOption.click()
-        await this.employeeNameTextbox.fill(employeeName)
+        await this.employeeNameTextbox.fill(name)
         await this.page.waitForTimeout(3000);
         await this.employeeNameTextbox.press('ArrowDown')
         await this.employeeNameTextbox.press('Enter')
@@ -83,6 +86,7 @@ export class OrangeHrm extends BasePage{
         await this.addAdminpassword.fill(pass);
         await this.addAdminConfPassword.fill(pass);
         await this.saveNewAdminButton.click();
+        await this.page.waitForTimeout(3000);
 
     }
 }
